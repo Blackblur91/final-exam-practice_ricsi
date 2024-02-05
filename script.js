@@ -1,58 +1,131 @@
-const testString = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus nobis odit, perferendis voluptates vero quas nisi doloribus ducimus et! Odit officiis deleniti in autem enim eius nihil rerum animi ducimus."
+const people = [
+	{
+		name: "Ricsi",
+		age: 29,
+		latestPurchases: [
+			{
+				item: "shoe",
+				price: 2999,
+			},
+			{
+				item: "computer",
+				price: 199999
+			},
+			{
+				item: "beer",
+				price: 349
+			}
+		] 
+	},
+	{
+		name: "Jakab",
+		age: 14,
+		latestPurchases: [
+			{
+				item: "book",
+				price: 1999
+			}, 
+			{
+				item: "ticket",
+				price: 999
+			}
+		]
+	},
+	{
+		name: "Kálmán",
+		age: 22,
+		latestPurchases: [
+			{
+				item: "computer",
+				price: 250000
+			},
+			{
+				item: "computer",
+				price: 390000
+			}
+		]
+	}
+]
 
-function decodeText(text) {
-	const words = text.split(" ")
+const newItem = {
+	item: "beer",
+	price: 179
+}
 
+function getPossibleCustomers(people, newItem) {
 	let result = []
 
-	words.forEach(word => {
-		let wordLength = word.length
-		let found = false
+	people.forEach(person => {
+		if (person.age >= 18) {
+			let possibleCustomer = false
 
-		if (word[wordLength - 1] === "!" || word[wordLength - 1] === "," || word[wordLength - 1] === ".") {
-			wordLength--
-			found = true
-		}
+			person.latestPurchases.forEach(purchase => {
+				if (purchase.item === newItem.item && purchase.price > newItem.price) {
+					possibleCustomer = true
+				}
+			})
 
-		if (wordLength % 2 === 0) {
-			let newWord = ""
-
-			if (found == true) {
-				newWord = word.substring(0, wordLength).split('').reverse().join('')
-			} else {
-				newWord = word.split('').reverse().join('')
+			if (possibleCustomer) {
+				result.push(person.name)
 			}
-			// ["a", "m", "e", "t"]
-
-			/* for (let i = wordLength - 1; i >= 0; i--) {
-				newWord += word[i]
-			} */
-
-			if (found === true) {
-				newWord += word[word.length - 1]
-			}
-
-			result.push(newWord)
-		}
-
-		if (wordLength % 2 !== 0) {
-			let newWord = word.toUpperCase()
-
-			result.push(newWord)
 		}
 	})
 
-	return result.join(" ")
+	if (result.length === 0) {
+		return null
+	} else {
+		return result
+	}
 }
 
-console.log(decodeText(testString))
-console.log(decodeText("The quick brown fox jumps over the lazy dog."))
+console.log(getPossibleCustomers(people, newItem))
 
 /* 
 
-TASKS:
-RUN THROUGH THE TEXT, AND MAKE THE FOLLOWING CHANGES:
- - IF THE WORDS LENGTH IS EVEN -> REVERSE THE WORD
- - IF THE WORDS LENGTH IS ODD -> MAKE THE WORD UPPERCASE
+FELADAT:
+Kapunk egy ember objectekből álló arrayt, amelyek így néznek ki:
+{
+	name: "Ricsi",
+	age: 29,
+	latestPurchases = [
+		{
+			item: "shoe",
+			price: 2999,
+		},
+		{
+			item: "computer",
+			price: 199999
+		},
+		{
+			item: "beer",
+			price: 349
+		}
+	] 
+}
+
+{
+	name: "Jakab",
+	age: 14,
+	latestPurchases: [
+		{
+			item: "book",
+			price: 1999
+		}, 
+		{
+			item: "ticket"
+			price: 999
+		}
+	]
+}
+
+az a feladatunk, hogy kiderítsük, hogy az új termék kiknek lenne jó ajánlat
+
+jó ajánlat a termék, ha:
+ - a vásárló legalább 18 éves,
+ - a legutóbbi vásárlásai között van:
+   - ugyanolyan item
+	 - olcsóbb az új termék mint az ugyanolyan item
+
+visszatérési érték: arrayben a lehetséges vásárlók neve, minden vásárló maximum 1x, vagy null, ha nincs lehetséges vásárló
 
 */
